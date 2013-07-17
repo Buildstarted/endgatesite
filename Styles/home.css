@@ -1,14 +1,14 @@
 ﻿#feature_slider article.slide#featured1_bg {
-  background: url("/Images/homeFeatured/featured1.png") repeat-x top center;
+  background: url("Images/homeFeatured/featured1.png") repeat-x top center;
 }
 #feature_slider article.slide#featured2_bg {
-  background: url("/Images/homeFeatured/featured2.png") repeat-x top center;
+  background: url("Images/homeFeatured/featured2.png") repeat-x top center;
 }
 #feature_slider article.slide#featured3_bg {
-  background: url("/Images/homeFeatured/featured3.png") repeat-x top center;
+  background: url("Images/homeFeatured/featured3.png") repeat-x top center;
 }
 #feature_slider article.slide#featured4_bg {
-  background: url("/Images/homeFeatured/featured4.png") repeat-x top center;
+  background: url("Images/homeFeatured/featured4.png") repeat-x top center;
 }
 /* Main Slider
 -------------------------------------------------- */
