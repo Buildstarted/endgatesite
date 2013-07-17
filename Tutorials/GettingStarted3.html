@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>EndGate - Tutorials - Getting Started: Collision and Tweens</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <meta name="description" content="Go through part three of three in the getting started tutorials for EndGate.  This tutorial introduces you to the collision and tweening API&#39;s of EndGate.">
+
+    <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,900,300italic,400italic,700italic,900italic' rel='stylesheet' type='text/css'>
+    <link href="../bundles/main@v=eqLCeFX_0od7JWV8wyzsJ2JcUfvgQZy5zvBUh6GO1Fg1" rel="stylesheet"/>
+
+
+    
+    
+    <style>
+        .anchorAccessible ol li,
+        .anchorAccessible ul li {
+            margin-bottom: 20px;
+        }
+    </style>
+
+
+
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body>
+    <header class="navbar transparent navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="brand" href="../index.html">
+                    <strong>EndGate</strong>
+                </a>
+                <div class="nav-collapse collapse">
+                    <ul class="nav pull-right">
+                        <li><a href="../Download.html">DOWNLOAD</a></li>
+                        <li><a href="../Tutorials.html" class="active">TUTORIALS</a></li>
+                        <li><a href="../Samples.html">SAMPLES</a></li>
+                        <li><a href="../API.html">API</a></li>
+                        <li><a href="../FAQ.html">FAQ</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div id="body">
+        
+        <section class="content-wrapper main-content clear-fix">
+            <div class="container">
+                
+
+
+<ul class="breadcrumb">
+    <li><a href="../Tutorials.html">Tutorials</a> <span class="divider">/</span></li>
+    <li class="active">Getting Started: Collision and Tweens</li>
+</ul>
+
+
+
+
+<div class="section_header">
+    <h3>Getting Started: Collision and Tweens</h3>
+
+    <p>In this tutorial we're continuing from where we left off in the second <a href="GettingStarted2/index.html">GettingStarted: Input</a> tutorial.  In this tutorial we'll add collision detection and tweening to our game to make something that slightly resembles a playable game.</p>
+
+    <p><b>Overview</b>:</p>
+    <ol>
+        <li><a href="GettingStarted3.html#creatingCollidables">Creating collidables</a></li>
+        <li><a href="GettingStarted3.html#monitoringCollisions">Monitoring collisions</a></li>
+        <li><a href="GettingStarted3.html#juicingItUpWithTweens">Juicing it up with tweens</a></li>
+        <li><a href="GettingStarted3.html#synopsis">Synopsis</a></li>
+    </ol>
+
+    <p>This tutorial requires that you've completed the second <a href="GettingStarted2/index.html">GettingStarted: Input</a> tutorial.  You can always get the full source for the Getting Started: Input tutorial <a href="http://endgate.net/Downloads/Tutorials/GettingStarted2/GettingStartedTutorial2.zip">Here</a>.</p>
+</div>
+
+<div class="section_header anchorAccessible">
+    <span class="anchorLink" id="creatingCollidables"></span>
+    <h3>Creating collidables</h3>
+
+    <p>When we last left our Getting Started project we had a red circle that would move across the screen either by hitting "w, a, s, d, Up, Left, Right, Down" or by clicking.  Now that we have free range movement with our circle we should add some targets to collect.</p>
+    <p>
+        Lets add a new TypeScript file to our project.  Name it <b>Target.ts</b>.  Start by replacing the contents of <b>Target.ts</b> with:
+    <textarea class="endgate-code">
+/// <reference path="Scripts/endgate-0.1.0.d.ts" />
+
+class Target extends eg.Collision.Collidable {
+    private static _targetRadius: number = 50;
+
+    public Graphic: eg.Graphics.Circle;
+
+    constructor(x: number, y: number) {
+        this.Graphic = new eg.Graphics.Circle(x, y, Target._targetRadius);
+
+        super(this.Graphic.GetDrawBounds());
+    }
+}</textarea>
+        So lets go over what's going on here.  First we're creating a custom class named <em>Target</em> which extends an EndGate <a href="../API/Module/EndGate.Collision/Class/Collidable/index.html">Collidable</a> object.  Collidable objects are objects that can be monitored for collisions and are usually used in conjunction with a <a href="../API/Module/EndGate.Collision/Class/CollisionManager/index.html">CollisionManager</a>.  Inheriting from a Collidable also means that our <em>Target</em> object will have a <a href="../API/Module/EndGate.Collision/Class/Collidable/Field/Bounds/index.html">Bounds</a> field which represents the collidable portion of our target.  Lastly we have a private <em>Graphic</em> field which represents the visible portion of the <em>Target</em> object.  This means IF we want to adjust the bounds and the graphic separately, we can!
+    </p>
+
+    <p>
+        One thing you may have noticed is that we didn't give our circle a color, therefore as it stands our circle is just an invisible graphic, not much of a graphic is it?  Lets make the target look like a green bordered circle with a green cross in it.  Modify the <b>Target.ts</b> file to look like: 
+        <textarea class="endgate-code">
+/// <reference path="Scripts/endgate-0.1.0.d.ts" />
+
+class Target extends eg.Collision.Collidable {
+    private static _targetRadius: number = 30;
+    private static _targetColor: string = "green";
+
+    public Graphic: eg.Graphics.Circle;
+
+    constructor(x: number, y: number) {
+        this.Graphic = new eg.Graphics.Circle(x, y, Target._targetRadius);
+
+        super(this.Graphic.GetDrawBounds());
+
+        // Make a border around our base graphic
+        this.Graphic.Border(5, Target._targetColor);
+        // Add a vertical rectangle to the base graphic
+        this.Graphic.AddChild(new eg.Graphics.Rectangle(0, 0, 5, 40, Target._targetColor));
+        // Add a horizontal rectangle to the base graphic
+        this.Graphic.AddChild(new eg.Graphics.Rectangle(0, 0, 40, 5, Target._targetColor));
+    }
+}</textarea>
+        This introduces a new concept to the graphics class, children.  As you can see in the modified code we added lines that utilize the <a href="../index.html">AddChild</a> method.  All <a href="../API/Module/EndGate.Graphics/Class/Graphic2d/index.html">Graphic2d</a>'s are capable of having children graphics; these graphics are drawn when the parent is drawn.  Also any children graphics drawn are drawn relative to the parent graphic, this is why the vertical and horizontal <a href="../API/Module/EndGate.Graphics/Class/Rectangle/index.html">Rectangle graphics</a> that we add to the circle graphic are at position (0,0).
+    </p>
+
+    <p>
+        Lets now add our new <em>Target</em> object to our <b>default.htm</b> and <b>MyGame.ts</b> file.  In the <b>default.htm</b> file add the following script inclusion right after the EndGate library inclusion:
+        <textarea class="html-code">
+<script src="http://endgate.net/Tutorials/Target.js"></script></textarea>
+        Lets now include a reference to our <b>Target.ts</b> file in the <b>MyGame.ts</b> file (at the very top after the EndGate library reference inclusion):
+        <textarea class="endgate-code">
+/// <reference path="Target.ts" /></textarea><br />
+        Our <em>Target</em> object is now ready for use!
+    </p>
+</div>
+
+<div class="section_header anchorAccessible">
+    <span class="anchorLink" id="monitoringCollisions"></span>
+    <h3>Monitoring collisions</h3>
+
+    <p>
+        In this section we're going to work on drawing our targets to the screen and monitoring them with a <a href="../API/Module/EndGate.Collision/Class/CollisionManager/index.html">CollisionManager</a>.  Lets start by randomly drawing targets around the screen, open up <b>MyGame.ts</b> and add the following fields to the field list:.
+    <textarea class="endgate-code">
+private _targetCount: number = 20;</textarea>
+        <em>_targetCount</em> will represent how many targets we will draw to the screen.<br />
+        Next lets add a private function to the <em>MyGame</em> class to handle drawing targets on the screen and also monitoring them for collisions. Add this to the bottom of the <em>MyGame</em> class:
+    <textarea class="endgate-code">
+private CreateTargets(): void {
+    var bounds = new eg.Size2d(this.Scene.DrawArea.width, this.Scene.DrawArea.height),
+        target: Target;
+
+    for (var i = 0; i < this._targetCount; i++) {
+        target = new Target(bounds.Width * Math.random(), bounds.Height * Math.random());
+
+        this.Scene.Add(target.Graphic);
+        this.CollisionManager.Monitor(target);
+    }
+}</textarea>
+        So there's two new API's that we've yet to go over in this code snippet.
+    </p>
+    <ol>
+        <li>The first is the scene's <a href="../API/Module/EndGate.Rendering/Class/Scene2d@fieldName=DrawArea%252F.html">DrawArea</a>, this represents the canvas that is being used to draw graphics onto the screen.  Therefore we're dictating the bounds of the game screen by looking at the canvas' width and height.</li>
+        <li>The next API to look at is the <a href="../API/Module/EndGate.Collision/Class/CollisionManager/index.html">CollisionManager</a>'s <a href="../API/Module/EndGate.Collision/Class/CollisionManager/Method/Monitor/index.html">Monitor</a> method; it essentially tracks <a href="../API/Module/EndGate.Collision/Class/Collidable/index.html">Collidable</a>'s and triggers the monitored collidable's <a href="../API/Module/EndGate.Collision/Class/Collidable/Field/OnCollision/index.html">OnCollision</a> event, the CollisionManager's <a href="../API/Module/EndGate.Collision/Class/CollisionManager/Field/OnCollision/index.html">OnCollision</a> event and the Collidable's <a href="../API/Module/EndGate.Collision/Class/Collidable/Method/Collided/index.html">Collided</a> method when collisions occur.</li>
+    </ol>
+    <p>
+        Now that we have a helper function all we need to do now is call it.  Add the calling code to the <em>MyGame</em> constructor:
+        <textarea class="endgate-code">
+this.CreateTargets();</textarea>
+    </p>
+    <p>
+        At this point you can run the application (ctrl+f5) and your screen should look something like this: 
+        <img src="../Images/Tutorials/GettingStarted3/gamescreen.png" alt="Game Screen" />
+    </p>
+    <p>
+        One thing you should notice is that when you collide with the targets, nothing happens!  There are two reasons why this happens, the first is because we've yet to code the reaction to the collision event for targets.  Lets do this now, add the following function to the <b>Target.ts</b>'s Target class:
+        <textarea class="endgate-code">
+public Collided(data: eg.Collision.Assets.CollisionData): void {
+    // We don't want to collide with other targets
+    if (!(data.With instanceof Target)) {
+        // Will remove the target from the collision manager
+        this.Dispose();
+        // Will remove the target from the scene (will no longer be drawn)
+        this.Graphic.Dispose();
+
+        super.Collided(data);
+    }
+}</textarea>
+        This function overrides the base <a href="../API/Module/EndGate.Collision/Class/Collidable/index.html">Collidable</a>'s <a href="../API/Module/EndGate.Collision/Class/Collidable/Method/Collided/index.html">Collided</a> function so we can do what we want when the Target collides.  Most of the code is described via the comments but the one piece I feel I should clarify is calling the base classes Collided function at the very end; the purpose of calling the base collided function is so that the OnCollision event is then triggered for the Collidable.
+    </p>
+    <p>
+        If you were to run the application now you'd still see that nothing happens when you run over the targets.  This leads me to the second reason why running over targets does nothing.  Currently we're just drawing our red circle, but we're not monitoring it for collisions because it's just a graphic, not a collidable.  So lets fix this, lets make our red circle a collidable object, lets call it a <em>Seeker</em>.  Add a new TypeScript file to the project and call it <b>Seeker</b>; now replace the contents with: 
+        <textarea class="endgate-code">
+/// <reference path="Scripts/endgate-0.1.0.d.ts" />
+
+class Seeker extends eg.Collision.Collidable {
+    private static _seekerRadius: number = 40;
+    private static _seekerColor: string = "red";
+
+    public Graphic: eg.Graphics.Circle;
+
+    constructor(x: number, y: number) {
+        this.Graphic = new eg.Graphics.Circle(x, y, Seeker._seekerRadius, Seeker._seekerColor);
+
+        super(this.Graphic.GetDrawBounds());
+    }
+}</textarea>
+        This setup should look familiar, we're essentially creating a drawable collidable the same way we did when we <a href="GettingStarted3.html#creatingCollidables">created our targets</a> class.  However, unlike the targets class we will be constantly moving the Seeker class based on user input.  That means we need to re-implement some code from the <b>MyGame.ts</b>, more specifically we need to implement the movement controller for our <em>Seeker</em> class.
+    </p>
+    <p>
+        Lets start by adding a static speed variable to our seeker's field list:
+    <textarea class="endgate-code">
+private static _seekerSpeed: number = 200;</textarea>
+        Next, lets add our public movement controller field:
+    <textarea class="endgate-code">
+public MovementController: eg.MovementControllers.LinearMovementController;</textarea>
+        and finally lets initialize the movement controller at the end of our constructor:
+    <textarea class="endgate-code">
+this.MovementController = new eg.MovementControllers.LinearMovementController(new Array<eg.IMoveable>(this.Bounds, this.Graphic), Seeker._seekerSpeed);</textarea>
+        The only difference from here and in the <b>MyGame.ts</b> is that we're now passing in multiple objects to the movement controller's initialization constructor.  With how TypeScript compiles, in order to know that all elements in an array are of the correct type you need to either cast an array to the correct type or you need to explicitly declare it as new Array&lt;foo&gt;.
+    </p>
+    <p>The <b>Seeker.ts</b> should now look something like this: </p>
+    <textarea class="endgate-code">
+/// <reference path="Scripts/endgate-0.1.0.d.ts" />
+
+class Seeker extends eg.Collision.Collidable {
+    private static _seekerRadius: number = 40;
+    private static _seekerColor: string = "red";
+    private static _seekerSpeed: number = 200;
+
+    public Graphic: eg.Graphics.Circle;
+    public MovementController: eg.MovementControllers.LinearMovementController;
+
+    constructor(x: number, y: number) {
+        this.Graphic = new eg.Graphics.Circle(x, y, Seeker._seekerRadius, Seeker._seekerColor);
+
+        super(this.Graphic.GetDrawBounds());
+
+        this.MovementController = new eg.MovementControllers.LinearMovementController(new Array<eg.IMoveable>(this.Bounds, this.Graphic), Seeker._seekerSpeed);
+    }
+}</textarea>
+
+    <p>
+        Now the last step in all this is cleaning up the <b>MyGame.ts</b> file to utilize the new <em>Seeker</em> class appropriately.  Remove the movement controller, and circle fields; and add a seeker field.  The <em>MyGame</em> field list should look something like: 
+        <textarea class="endgate-code">
+private _seeker: Seeker;
+private _inputController: eg.InputControllers.DirectionalInputController;
+private _targetCount: number = 20;</textarea>
+        Next remove the old movement controller initialization from the constructor, initialize a seeker instead of a circle and change all references to the movement controller to then use the seeker's movement controller.  The updated constructor should look something like this: 
+        <textarea class="endgate-code">
+constructor() {
+    super();
+
+    this._seeker = new Seeker(100, 150);
+
+    this._inputController = new eg.InputControllers.DirectionalInputController(this.Input.Keyboard, (direction: string, startMoving: boolean) => {
+        this._seeker.MovementController.Move(direction, startMoving);
+    });
+
+    this.Input.Mouse.OnClick.Bind((event: eg.Input.IMouseClickEvent) => {
+        this._seeker.MovementController.Position = event.Position;
+    });
+        
+    this.Scene.Add(this._seeker.Graphic);
+    this.CollisionManager.Monitor(this._seeker);
+
+    this.CreateTargets();
+}</textarea>
+    </p>
+
+    <p>You should now be able to run the application and collide with all the targets.  As you collide you should see the targets begin to disappear.</p>
+</div>
+
+<div class="section_header anchorAccessible">
+    <span class="anchorLink" id="juicingItUpWithTweens"></span>
+    <h3>Juicing it up with tweens</h3>
+
+    <p>I'm sure you've noticed that clicking on each target with your mouse instantly captures the targets.  This is an interesting game mechanic but we can do better.  Let's make it possible to capture multiple targets with a single click by using a <a href="../API/Module/EndGate.Tweening/Class/Vector2dTween/index.html">Vector2dTween</a>.</p>
+    <p>
+        Lets add a _moveTween field to our field list at the top of the <em>MyGame</em> class: 
+        <textarea class="endgate-code">
+private _movementTween: eg.Tweening.Vector2dTween;</textarea>
+        Lets then initialize it within our constructor:
+        <textarea class="endgate-code">
+// The From and To parameters (first two parameters) are being set to zero because we'll be setting them on mouse click.
+this._movementTween = new eg.Tweening.Vector2dTween(eg.Vector2d.Zero, eg.Vector2d.Zero, eg.TimeSpan.FromSeconds(1), eg.Tweening.Functions.Back.EaseOut);</textarea>
+        You'll notice that in this code snippet the we're passing in a default <a href="../API/Module/EndGate.Tweening/Class/Tween/Field/From/index.html">From</a> and <a href="../API/Module/EndGate.Tweening/Class/Tween/Field/To/index.html">To</a> value, as well as the <a href="../API/Module/EndGate.Tweening/Class/Duration/Field/Duration/index.html">Duration</a>.  Finally we're passing in a <a href="../API/Module/EndGate.Tweening.Functions/Class/Back/Field/EaseOut/index.html">EaseOut</a>  <a href="../API/Module/EndGate.Tweening.Functions/Class/Back/index.html">Back</a> tweening function.  This function represents how the tween will transition <em>From</em> values to the corresponding <em>To</em> value.
+    </p>
+    <p>
+        Next we need to add logic to update our seekers position every time the tween updates/changes its <a href="../API/Module/EndGate.Tweening/Class/Tween/Field/Current/index.html">Current</a> value, add the following after the tween initialization within the constructor: 
+        <textarea class="endgate-code">
+// Every time the tween updates its value this event handler is triggered.
+this._movementTween.OnChange.Bind((newPosition) => {
+    this._seeker.MovementController.Position = newPosition;
+});</textarea>
+        Again, take notice to how we're adjusting the seeker's movement controller position and not the graphic/bounds directly.
+    </p>
+    <p>
+        We then need to change how our seeker moves when we click the game screen, change the mouse click event handling code to look something like this: 
+        <textarea class="endgate-code">
+this.Input.Mouse.OnClick.Bind((event: eg.Input.IMouseClickEvent) => {
+    // Update the tween's from and to values
+    this._movementTween.From = this._seeker.MovementController.Position;
+    this._movementTween.To = event.Position;
+    // This is resetting the tween and then playing it, we're calling restart instead of play so that we can re-use the tween over and over.
+    this._movementTween.Restart();
+});</textarea>
+        So here we set our <em>From</em> value to be the seekers current location and we set our <em>To</em> value to be where we clicked.  We then <a href="../API/Module/EndGate.Tweening/Class/Tween/Method/Restart/index.html">Restart</a> the tween which essentially <a href="../API/Module/EndGate.Tweening/Class/Tween/Method/Reset/index.html">Reset</a>'s and then <a href="../API/Module/EndGate.Tweening/Class/Tween/Method/Play/index.html">Play</a>'s the tween.
+    </p>
+    <p>
+        The last thing we need to do is Update the tween so it can update its value when its playing.  Add the following line of code to the update function:
+        <textarea class="endgate-code">this._movementTween.Update(gameTime);</textarea>
+    </p>
+</div>
+
+<div class="section_header anchorAccessible">
+    <span class="anchorLink" id="synopsis"></span>
+    <h3>Synopsis</h3>
+    <p>Through this final getting started tutorial you should have learned the basics of creating <a href="../API/Module/EndGate.Collision/Class/Collidable/index.html">Collidable</a>'s and even tweening objects to add different game mechanics.</p>
+    <p>
+        Here's the final list of completed files:
+        <ol>
+            <li><b>default.htm</b>:
+                <br />
+                <textarea class="html-code">
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+
+    <title>Getting Started with EndGate</title>
+</head>
+<body>
+    <script src="http://endgate.net/Tutorials/Scripts/endgate-0.1.0.js"></script>
+    <script src="http://endgate.net/Tutorials/Seeker.js"></script>
+    <script src="http://endgate.net/Tutorials/Target.js"></script>
+    <script src="http://endgate.net/Tutorials/MyGame.js"></script>
+    <script src="http://endgate.net/Tutorials/app.js"></script>
+</body>
+</html>
+                </textarea>
+            </li>
+            <li><b>MyGame.ts</b>:
+                <br />
+                <textarea class="endgate-code">
+/// <reference path="Scripts/endgate-0.1.0.d.ts" />
+/// <reference path="Target.ts" />
+/// <reference path="Seeker.ts" />
+
+class MyGame extends eg.Game {
+    private _seeker: Seeker;
+    private _inputController: eg.InputControllers.DirectionalInputController;
+    private _targetCount: number = 20;
+    private _movementTween: eg.Tweening.Vector2dTween;
+
+    constructor() {
+        super();        
+
+        this._seeker = new Seeker(100, 150);
+
+        this._inputController = new eg.InputControllers.DirectionalInputController(this.Input.Keyboard, (direction: string, startMoving: boolean) => {
+            this._seeker.MovementController.Move(direction, startMoving);
+        });
+
+        // The From and To parameters (first two parameters) are being set to zero because we'll be setting them on mouse click.
+        this._movementTween = new eg.Tweening.Vector2dTween(eg.Vector2d.Zero, eg.Vector2d.Zero, eg.TimeSpan.FromSeconds(1), eg.Tweening.Functions.Back.EaseOut);
+        // Every time the tween updates its value this event handler is triggered.
+        this._movementTween.OnChange.Bind((newPosition) => {
+            this._seeker.MovementController.Position = newPosition;
+        });
+
+        this.Input.Mouse.OnClick.Bind((event: eg.Input.IMouseClickEvent) => {
+            // Update the tween's from and to values
+            this._movementTween.From = this._seeker.MovementController.Position;
+            this._movementTween.To = event.Position;
+            // This is resetting the tween and then playing it, we're calling restart instead of play so that we can re-use the tween over and over.
+            this._movementTween.Restart();
+        });              
+
+        this.Scene.Add(this._seeker.Graphic);
+        this.CollisionManager.Monitor(this._seeker);
+
+        this.CreateTargets();
+    }
+
+    public Update(gameTime: eg.GameTime): void {
+        this._seeker.MovementController.Update(gameTime);
+        this._movementTween.Update(gameTime);
+    }
+
+    private CreateTargets(): void {
+        var bounds = new eg.Size2d(this.Scene.DrawArea.width, this.Scene.DrawArea.height),
+            target: Target;
+
+        for (var i = 0; i < this._targetCount; i++) {
+            target = new Target(bounds.Width * Math.random(), bounds.Height * Math.random());
+
+            this.Scene.Add(target.Graphic);
+            this.CollisionManager.Monitor(target);
+        }
+    }
+}</textarea>
+            </li>
+            <li><b>Target.ts</b>:
+                <br />
+                <textarea class="endgate-code">
+/// <reference path="Scripts/endgate-0.1.0.d.ts" />
+
+class Target extends eg.Collision.Collidable {
+    private static _targetRadius: number = 30;
+    private static _targetColor: string = "green";
+
+    public Graphic: eg.Graphics.Circle;
+
+    constructor(x: number, y: number) {
+        this.Graphic = new eg.Graphics.Circle(x, y, Target._targetRadius);
+
+        super(this.Graphic.GetDrawBounds());
+
+        // Make a border around our base graphic
+        this.Graphic.Border(5, Target._targetColor);
+        // Add a vertical rectangle to the base graphic
+        this.Graphic.AddChild(new eg.Graphics.Rectangle(0, 0, 5, 40, Target._targetColor));
+        // Add a horizontal rectangle to the base graphic
+        this.Graphic.AddChild(new eg.Graphics.Rectangle(0, 0, 40, 5, Target._targetColor));
+    }
+
+    public Collided(data: eg.Collision.Assets.CollisionData): void {
+        // We don't want to collide with other targets
+        if (!(data.With instanceof Target)) {
+            // Will remove the target from the collision manager
+            this.Dispose();
+            // Will remove the target from the scene (will no longer be drawn)
+            this.Graphic.Dispose();
+
+            super.Collided(data);
+        }
+    }
+}
+                </textarea>
+            </li>
+            <li><b>Seeker.ts</b>:
+                <br />
+                <textarea class="endgate-code">
+/// <reference path="Scripts/endgate-0.1.0.d.ts" />
+
+class Seeker extends eg.Collision.Collidable {
+    private static _seekerRadius: number = 40;
+    private static _seekerColor: string = "red";
+    private static _seekerSpeed: number = 200;
+
+    public Graphic: eg.Graphics.Circle;
+    public MovementController: eg.MovementControllers.LinearMovementController;
+
+    constructor(x: number, y: number) {
+        this.Graphic = new eg.Graphics.Circle(x, y, Seeker._seekerRadius, Seeker._seekerColor);
+
+        super(this.Graphic.GetDrawBounds());
+
+        this.MovementController = new eg.MovementControllers.LinearMovementController(new Array<eg.IMoveable>(this.Bounds, this.Graphic), Seeker._seekerSpeed);
+    }
+}
+                </textarea>
+            </li>
+        </ol>
+    </p>
+    <p>
+        And if you'd like to get the project source in its entirety you can always download it here:
+        <br />
+        <b><a href="../Downloads/Tutorials/GettingStarted2/GettingStarted2.zip" class="btn btn-success"><i class="icon-download-alt icon-white"></i>Download Tutorial Source</a></b>
+    </p>
+</div>
+
+
+
+            </div>
+        </section>
+    </div>
+    <footer id="footer">
+        <div class="container">
+            <div class="row info">
+                <div class="pull-left residence">
+                    <ul style="margin-left: 0px;">
+                        <li><a href="https://nuget.org/packages/endgate/" target="_blank">Nuget Package</a>.</li>
+                    </ul>
+                </div>
+                <div class="touch">
+                    <ul>
+                        <li>Suggestions, contributions or concerns? <a href="mailto:contact@endgate.net">Contact me.</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="credits">
+                <div class="social">
+                    <a href="https://github.com/NTaylorMullen/EndGate" class="github" title="GitHub" target="_blank">
+                        <span class="socialicons ico8"></span>
+                        <span class="socialicons_h ico8h"></span>
+                    </a>
+                    <a href="https://twitter.com/ntaylormullen" class="twitter" title="Twitter" target="_blank">
+                        <span class="socialicons ico2"></span>
+                        <span class="socialicons_h ico2h"></span>
+                    </a>
+                </div>
+                <div class="copyright">© 2013 N. Taylor Mullen. All rights reserved.</div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../bundles/jquery@v=jNL6n45QMY2F5Zancgr7rQGd_p8stuHeVGd3yLUynn41"></script>
+
+    <script src="../Scripts/bootstrap.min.js"></script>
+
+    <script src="../Scripts/theme.js"></script>
+
+    <script src="../bundles/codemirror@v=q-ScDhiVKuU31aCkypFTphtrVD85CFTteJLekOGXye81"></script>
+
+    <script src="../Scripts/common.js"></script>
+
+    
+    
+
+
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date(); a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-42235120-1', 'endgate.net');
+        ga('send', 'pageview');
+
+</script>
+</body>
+</html>

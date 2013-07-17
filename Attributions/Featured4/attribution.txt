@@ -1,0 +1,11 @@
+﻿Attribution:
+
+The images associated with this image are from the samples.
+
+Fire explosion sprite sheet: http://endgate.net/Samples/AnimatedSprites/images/fire_explosion.png
+Fire explosion attribution: http://endgate.net/Samples/AnimatedSprites/images/attribution.txt
+Smoke poof sprite sheet: http://endgate.net/Samples/AudioHandling/images/smoke_poof.png
+Burning Flame sprite sheet: http://endgate.net/Samples/AudioHandling/images/burning_flame.png
+Smoke poof & burning flame attribution: http://endgate.net/Samples/AudioHandling/images/attribution.txt
+TopLeft RawRPG map attribution: http://endgate.net/Content/Samples/RawRPG/images/attribution.txt
+TopRight MapCreator map attribution: http://endgate.net/Attributions/Featured13/attribution.txt

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>EndGate - Tutorials - Getting Started: Graphics</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <meta name="description" content="Go through part one of three in the getting started tutorials for EndGate.  This tutorial introduces you to beginning and EndGate project and ultimately drawing graphics onto the game screen.">
+
+    <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,900,300italic,400italic,700italic,900italic' rel='stylesheet' type='text/css'>
+    <link href="../bundles/main@v=eqLCeFX_0od7JWV8wyzsJ2JcUfvgQZy5zvBUh6GO1Fg1" rel="stylesheet"/>
+
+
+    
+    
+    <style>
+        .anchorAccessible ol li,
+        .anchorAccessible ul li {
+            margin-bottom: 20px;
+        }
+    </style>
+
+
+
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body>
+    <header class="navbar transparent navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="brand" href="../index.html">
+                    <strong>EndGate</strong>
+                </a>
+                <div class="nav-collapse collapse">
+                    <ul class="nav pull-right">
+                        <li><a href="../Download.html">DOWNLOAD</a></li>
+                        <li><a href="../Tutorials.html" class="active">TUTORIALS</a></li>
+                        <li><a href="../Samples.html">SAMPLES</a></li>
+                        <li><a href="../API.html">API</a></li>
+                        <li><a href="../FAQ.html">FAQ</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div id="body">
+        
+        <section class="content-wrapper main-content clear-fix">
+            <div class="container">
+                
+
+
+<ul class="breadcrumb">
+    <li><a href="../Tutorials.html">Tutorials</a> <span class="divider">/</span></li>
+    <li class="active">Getting Started: Graphics</li>
+</ul>
+
+
+
+
+<div class="section_header">
+    <h3>Getting Started: Graphics</h3>
+
+    <p>In this tutorial I'll introduce you to the basics of game development with EndGate.  We'll go over how to setup your development environment (Visual Studio) to use TypeScript and then teach you the fundamentals of developing games with EndGate.  I'll be using VS2012 but VS2010 should be very similar (but would require more setup when creating your first project).  This is the first part of a three part series in getting started with EndGate.  In this part we focus on manipulating graphics and drawing them onto the game screen.</p>
+
+    <p><b>Overview</b>:</p>
+    <ol>
+        <li><a href="GettingStarted1.html#settingUpYourEnvironment">Setting up your environment</a></li>
+        <li><a href="GettingStarted1.html#startingAnEGProject">Starting an EndGate project</a></li>
+        <li><a href="GettingStarted1.html#creatingAGame">Creating a Game</a></li>
+        <li><a href="GettingStarted1.html#movingTheCircle">Moving the circle</a></li>
+        <li><a href="GettingStarted1.html#synopsis">Synopsis</a></li>
+    </ol>
+</div>
+
+<div class="section_header anchorAccessible">
+    <span class="anchorLink" id="settingUpYourEnvironment"></span>
+    <h3>Setting up your environment</h3>
+
+    <p>If you've already setup your environment to use TypeScript skip to the "<a href="GettingStarted1.html#startingAnEGProject">Starting an EndGate project</a>" section.</p>
+    <p>See the <a href="../FAQ.html#question2">FAQ question</a> devoted to setting up your environment to use TypeScript.</p>
+</div>
+
+<div class="section_header anchorAccessible">
+    <span class="anchorLink" id="startingAnEGProject"></span>
+    <h3 id="StartingEndGateProject">Starting an EndGate project</h3>
+
+    <p>Now that our environment is setup to work with TypeScript lets get started.</p>
+
+    <ol>
+        <li>Start Visual Studio.</li>
+        <li><em>File > New > Project</em>.  Now in the search box in the top right corner of the dialog type in <b>TypeScript</b>.  This will bring up the <b>HTML Application with TypeScript</b> template.  Select it and name the project <b>GettingStartedTutorial</b>.<br />
+            <img src="../Images/Tutorials/GettingStarted1/CreateTypeScriptProject.png" alt="Create TypeScript project" style="width: 66%; height: 66%;" /></li>
+        <li>Right click on the <b>GettingStartedTutorial</b> project and click on <b>Manage Nuget Packages...</b>.<br />
+            <img src="../Images/Tutorials/GettingStarted1/InstallEndGate1.png" alt="Install nuget package step 1" /></li>
+        <li>Click the <b>Online</b> accordion, then in the upper right search box type in <b>EndGate</b>.  The EndGate package should come up, click on the <b>Install</b> button.  Once installed you can close the Package Manager window.<br />
+            <img src="../Images/Tutorials/GettingStarted1/InstallEndGate2.png" alt="Install nuget package" /></li>
+        <li>Lets now clean up some of the files within the project to work with what we will be using.  
+            <ul>
+                <li>Delete the <b>app.css</b> file, we will not be using a style sheet within this tutorial.</li>
+                <li>Delete the contents of <b>app.ts</b></li>
+                <li>Replace the contents of <b>default.htm</b> with:<br />
+                    <textarea class="html-code">
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+
+    <title>Getting Started with EndGate</title>
+</head>
+<body>
+    <script src="http://endgate.net/Tutorials/Scripts/endgate-0.1.0.js"></script>
+    <script src="http://endgate.net/Tutorials/app.js"></script>
+</body>
+</html></textarea><br />
+                    <em>Note:</em> if you have a different EndGate library version modify the script inclusion accordingly.
+                </li>
+            </ul>
+        </li>
+        <li>Your project should look something like this (the EndGate version may be different than the one depicted in the screen shot):
+            <br />
+            <img src="../Images/Tutorials/GettingStarted1/SolutionSetup.png" /></li>
+    </ol>
+</div>
+
+<div class="section_header anchorAccessible">
+    <span class="anchorLink" id="creatingAGame"></span>
+    <h3>Creating a Game</h3>
+
+    <p>
+        Lets work on creating the fundamentals of our first game.<br />
+        <b>First</b>, adding a basic TypeScript file to the project (for those unfamiliar to TypeScript).
+    </p>
+    <ol>
+        <li>Right click on the <b>GettingStartedTutorial</b> and click on the <em>Add</em> > <em>New Item...</em>.<br />
+            <em>Note: once a TypeScript file has been added a single time to a project there will be a quick link to adding TypeScript files in the add dialog.</em></li>
+        <li>In the upper right corner of the opened dialog type "<b>TypeScript</b>" into the search box.</li>
+        <li>Click on the <b>TypeScript File</b> template and name the file <b>MyGame</b> in the bottom search box; then press <b>Add</b>.</li>
+        <li>Delete the contents of the file (TypeScript files come with default code when added).</li>
+    </ol>
+
+    <p><b>Second</b>, lets start creating our game class.</p>
+    <ul>
+        <li>We need to have a reference to the EndGate library so we can have proper intellisense.  To do that add the following line of code to the top of <b>MyGame.ts</b>.<br />
+            <textarea class="endgate-code">
+/// <reference path="Scripts/endgate-0.1.0.d.ts" /></textarea>
+            <em>Note: Make sure the referenced EndGate version matches the version that is installed.</em>
+        </li>
+        <li>Lets now create the basic structure that will represent our game;  Add the following code to the <b>MyGame.ts</b> file.<br />
+            <textarea class="endgate-code">
+class MyGame extends EndGate.Game {
+    constructor() {
+        super();
+    }
+}</textarea>
+            Lets look at the first line:<br />
+            <textarea class="endgate-code">
+class MyGame extends EndGate.Game {</textarea>
+            We create a "<em>MyGame</em>" class that extends an EndGate <a href="../API/Module/EndGate/Class/Game/index.html">Game</a> class.<br />
+            An <b>important</b> thing to note is that the line could also be written as:
+            <textarea class="endgate-code">
+class MyGame extends eg.Game {</textarea>
+            This is because the short hand version of EndGate is <b>eg</b>.  You can access all EndGate objects via <b>EndGate</b> OR <b>eg</b>.<br />
+            We then have:
+            <textarea class="endgate-code">
+    constructor() {
+        super();</textarea>
+            The EndGate <a href="../API/Module/EndGate/Class/Game/index.html">Game</a> class needs to have its super constructor called to instantiate the game.<br />
+            <em>Note:</em> the super constructor can also take a canvas element if you wish to create something other than a full screen game; the provided canvas would have the game drawn onto it.
+        </li>
+        <li>We now have a basic game class, so lets actually draw something to the screen.  Add the following code to the <b>MyGame</b> constructor.<br />
+            <textarea class="endgate-code">
+this.Scene.Add(new eg.Graphics.Circle(100, 150, 40, "red"));</textarea>
+            The <a href="../API/Module/EndGate/Class/Game/index.html">Game</a> object has a <a href="../API/Module/EndGate/Class/Game/Field/Scene.html">Scene</a> field that represents what's being drawn.  So when we call the <a href="../API/Module/EndGate.Rendering/Class/Scene2d/Method/Add.html">Add</a> method and pass in a <a href="../API/Module/EndGate.Graphics/Class/Circle/index.html">Circle</a> graphics object the circle will then be drawn to the game screen.  The circle is positioned at x 100 and y 150, a radius of 40 and a color of red.
+        </li>
+
+        <p>To get a full list of drawable graphics checkout the <a href="../API/Module/EndGate.Graphics/index.html">Graphics</a> namespace.</p>
+    </ul>
+
+    <p><b>Finally</b>, before we can run our game we need to include the MyGame file into the html page and create an instance of it.</p>
+    <ol>
+        <li>Open the <b>default.htm</b> file and at the bottom of the body tag and BEFORE the app.js script inclusion include the reference to the generated <b>MyGame.js</b> file.<br />
+            <textarea class="html-code">
+<script src="http://endgate.net/Tutorials/MyGame.js"></script></textarea>
+        </li>
+        <li>Modify the <b>app.ts</b> file to look like:
+            <br />
+            <textarea class="endgate-code">
+/// <reference path="MyGame.ts" />
+
+var game = new MyGame();</textarea>
+        </li>
+    </ol>
+    <p>
+        We can now run our game, hit ctrl+f5.  It should look like this:<br />
+        <img src="../Images/Tutorials/GettingStarted1/Run1.png" alt="Run1" />
+    </p>
+</div>
+
+<div class="section_header anchorAccessible">
+    <span class="anchorLink" id="movingTheCircle"></span>
+    <h3>Moving the circle</h3>
+
+    <p>Well, now that we can draw graphics in our game we probably want to move/animate them throughout the screen as we would in a game.</p>
+    <ol>
+        <li>Lets start out by modifying our <b>MyGame.ts</b> to save the circle graphic so that we can then move it accordingly.
+    <textarea class="endgate-code">
+/// <reference path="Scripts/endgate-0.1.0.d.ts" />
+
+class MyGame extends eg.Game {
+    private _circle: eg.Graphics.Circle;
+
+    constructor() {
+        super();
+
+        this._circle = new eg.Graphics.Circle(100, 150, 40, "red");
+
+        this.Scene.Add(this._circle);
+    }
+}</textarea>
+        </li>
+        <li>We can now utilize the <a href="../API/Module/EndGate/Class/Game/index.html">Game</a>'s <a href="../API/Module/EndGate/Class/Game/Method/Update/index.html">Update</a> function to incrementally move the Circle across the screen.  Lets add the following code to the end of the MyGame class (after the constructor but before the ending curly bracket).
+            <textarea class="endgate-code">
+public Update(gameTime: eg.GameTime): void {
+    // Move the circle to the right at 200 pixels per second
+    this._circle.Position.X += gameTime.Elapsed.Seconds * 200;
+}</textarea><br />
+            The Update function is called (by default) 40 times per second.  Therefore in the above code we utilize the <a href="../API/Module/EndGate/Class/GameTime/index.html">GameTime</a>'s <a href="../API/Module/EndGate/Class/GameTime/Field/Elapsed/index.html">Elapsed</a> Seconds field which represents how much of a second has passed since the last call to Update.  Therefore if we multiply it by 200 (our circle move speed) we can ensure that we move the circle by 200 pixels to the right every 1 second.            
+        </li>
+    </ol>
+</div>
+
+<div class="section_header anchorAccessible">
+    <span class="anchorLink" id="synopsis"></span>
+    <h3>Synopsis</h3>
+
+    <p>If we run the project now we should see the circle move across the browser (infinitely).  If we wanted to gamify this project more we could reverse the translation direction when the circle hits the edge of the screen; one of the many modifications we could make.</p>
+    <p>Throughout this tutorial you should have learned how to create a basic game class, access the EndGate library, draw graphics to the screen and utilize the game's update function to animate objects on the screen.</p>
+    <p>Lastly here's how the files should look after the project has been completed:
+        <ol>
+            <li><b>app.ts</b>: <br  />
+<textarea class="endgate-code">
+/// <reference path="MyGame.ts" />
+
+var game = new MyGame();</textarea>
+            </li>
+            <li><b>MyGame.ts</b>: <br  />
+<textarea class="endgate-code">
+/// <reference path="Scripts/endgate-0.1.0.d.ts" />
+
+class MyGame extends eg.Game {
+    private _circle: eg.Graphics.Circle;
+
+    constructor() {
+        super();
+
+        this._circle = new eg.Graphics.Circle(100, 150, 40, "red");
+
+        this.Scene.Add(this._circle);
+    }
+
+    public Update(gameTime: eg.GameTime): void {
+        // Move the circle to the right at 200 pixels per second
+        this._circle.Position.X += gameTime.Elapsed.Seconds * 200;
+    }
+}</textarea>
+            </li>
+            <li><b>default.htm</b>: <br  />
+<textarea class="html-code">
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+
+    <title>Getting Started with EndGate</title>
+</head>
+<body>
+    <script src="http://endgate.net/Tutorials/Scripts/endgate-0.1.0.js"></script>
+    <script src="http://endgate.net/Tutorials/MyGame.js"></script>
+    <script src="http://endgate.net/Tutorials/app.js"></script>
+</body>
+</html></textarea>
+            </li>            
+        </ol>
+    </p>
+    <p>And if you'd like to get the project source in its entirety you can always download it here:
+        <br /><b><a href="http://endgate.net/Downloads/Tutorials/GettingStarted1/GettingStartedTutorial.zip" class="btn btn-success"><i class="icon-download-alt icon-white"></i> Download Tutorial Source</a></b>
+    </p>
+    <p>To continue onto the next tutorial click <a href="GettingStarted2/index.html">Here</a>.</p>
+</div>
+
+
+
+            </div>
+        </section>
+    </div>
+    <footer id="footer">
+        <div class="container">
+            <div class="row info">
+                <div class="pull-left residence">
+                    <ul style="margin-left: 0px;">
+                        <li><a href="https://nuget.org/packages/endgate/" target="_blank">Nuget Package</a>.</li>
+                    </ul>
+                </div>
+                <div class="touch">
+                    <ul>
+                        <li>Suggestions, contributions or concerns? <a href="mailto:contact@endgate.net">Contact me.</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="credits">
+                <div class="social">
+                    <a href="https://github.com/NTaylorMullen/EndGate" class="github" title="GitHub" target="_blank">
+                        <span class="socialicons ico8"></span>
+                        <span class="socialicons_h ico8h"></span>
+                    </a>
+                    <a href="https://twitter.com/ntaylormullen" class="twitter" title="Twitter" target="_blank">
+                        <span class="socialicons ico2"></span>
+                        <span class="socialicons_h ico2h"></span>
+                    </a>
+                </div>
+                <div class="copyright">© 2013 N. Taylor Mullen. All rights reserved.</div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../bundles/jquery@v=jNL6n45QMY2F5Zancgr7rQGd_p8stuHeVGd3yLUynn41"></script>
+
+    <script src="../Scripts/bootstrap.min.js"></script>
+
+    <script src="../Scripts/theme.js"></script>
+
+    <script src="../bundles/codemirror@v=q-ScDhiVKuU31aCkypFTphtrVD85CFTteJLekOGXye81"></script>
+
+    <script src="../Scripts/common.js"></script>
+
+    
+    
+
+
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date(); a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-42235120-1', 'endgate.net');
+        ga('send', 'pageview');
+
+</script>
+</body>
+</html>

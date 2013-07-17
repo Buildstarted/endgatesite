@@ -1,0 +1,24 @@
+﻿#apiQuickSelect {
+  margin-left: 0px;
+  width: 235px;
+}
+#apiQuickSelect ul.apiSelector:first-child {
+  margin-left: 0px;
+}
+ul.apiSelector li.moduleHolder {
+  list-style-type: none;
+  margin-bottom: 3px;
+}
+ul.apiSelector li.moduleHolder a {
+  color: #333333;
+}
+ul.apiSelector li.moduleHolder a.selected {
+  font-weight: bolder;
+  color: #000000;
+}
+ul.apiSelector li.moduleHolder.closed .treeViewIcon {
+  background-position-x: 0;
+}
+ul.apiSelector li.moduleHolder.closed ul {
+  display: none!important;
+}

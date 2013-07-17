@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>EndGate - Tutorials - Getting Started: Input</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <meta name="description" content="Go through part two of three in the getting started tutorials for EndGate.  This tutorial introduces you to handling mouse and keyboard events for your games.">
+
+    <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,900,300italic,400italic,700italic,900italic' rel='stylesheet' type='text/css'>
+    <link href="../bundles/main@v=eqLCeFX_0od7JWV8wyzsJ2JcUfvgQZy5zvBUh6GO1Fg1" rel="stylesheet"/>
+
+
+    
+    
+    <style>
+        .anchorAccessible ol li,
+        .anchorAccessible ul li {
+            margin-bottom: 20px;
+        }
+    </style>
+
+
+
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body>
+    <header class="navbar transparent navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="brand" href="../index.html">
+                    <strong>EndGate</strong>
+                </a>
+                <div class="nav-collapse collapse">
+                    <ul class="nav pull-right">
+                        <li><a href="../Download.html">DOWNLOAD</a></li>
+                        <li><a href="../Tutorials.html" class="active">TUTORIALS</a></li>
+                        <li><a href="../Samples.html">SAMPLES</a></li>
+                        <li><a href="../API.html">API</a></li>
+                        <li><a href="../FAQ.html">FAQ</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div id="body">
+        
+        <section class="content-wrapper main-content clear-fix">
+            <div class="container">
+                
+
+
+<ul class="breadcrumb">
+    <li><a href="../Tutorials.html">Tutorials</a> <span class="divider">/</span></li>
+    <li class="active">Getting Started: Input</li>
+</ul>
+
+
+
+
+<div class="section_header">
+    <h3>Getting Started: Input</h3>
+
+    <p>In this tutorial we're continuing from where we left off in the first <a href="GettingStarted1/index.html">GettingStarted: Graphics</a> tutorial.  In this tutorial we'll implement a new dynamic to our game, keyboard and mouse controls.</p>
+
+    <p><b>Overview</b>:</p>
+    <ol>
+        <li><a href="GettingStarted2.html#addingKeyboardControls">Adding keyboard controls</a></li>
+        <li><a href="GettingStarted2.html#usingInputControllers">Using input controllers</a></li>
+        <li><a href="GettingStarted2.html#usingMovementControllers">Using movement controllers</a></li>
+        <li><a href="GettingStarted2.html#addingMouseControls">Adding mouse controls</a></li>
+        <li><a href="GettingStarted2.html#synopsis">Synopsis</a></li>
+    </ol>
+
+    <p>This tutorial requires that you've completed the first <a href="GettingStarted1/index.html">GettingStarted: Graphics</a> tutorial.  You can always get the full source for the Getting Started: Graphics tutorial <a href="../Downloads/Tutorials/GettingStarted1/GettingStarted1.zip">Here</a>.</p>
+</div>
+
+<div class="section_header anchorAccessible">
+    <span class="anchorLink" id="addingKeyboardControls"></span>
+    <h3>Adding keyboard controls</h3>
+
+    <p>When we last left our Getting Started project we had a red circle that would move across the screen at a constant 200 pixels per second.  Lets now add controls to control the movement of the circle.</p>
+    <p>Open up the <b>MyGame.ts</b>, lets now add boolean flags to dictate which way we're trying to move:</p>
+    <textarea class="endgate-code">
+...
+class MyGame extends eg.Game {
+    private _circle: eg.Graphics.Circle;
+    private _movingLeft: boolean = false;
+    private _movingRight: boolean = false;
+    private _movingUp: boolean = false;
+    private _movingDown: boolean = false;
+...</textarea>
+    <p>Next we need to modify our directional boolean values based on keyboard input, lets use the <a href="../API/Module/EndGate.Input/Class/KeyboardHandler/index.html">KeyboardHandler</a>. Lets add some code to the MyGame constructor:</p>
+    <textarea class="endgate-code">
+this.Input.Keyboard.OnCommandDown("Up", () => {
+    this._movingUp = true;
+});
+this.Input.Keyboard.OnCommandUp("Up", () => {
+    this._movingUp = false;
+});
+
+this.Input.Keyboard.OnCommandDown("Right", () => {
+    this._movingRight = true;
+});
+this.Input.Keyboard.OnCommandUp("Right", () => {
+    this._movingRight = false;
+});
+
+this.Input.Keyboard.OnCommandDown("Down", () => {
+    this._movingDown = true;
+});
+this.Input.Keyboard.OnCommandUp("Down", () => {
+    this._movingDown = false;
+});
+
+this.Input.Keyboard.OnCommandDown("Left", () => {
+    this._movingLeft = true;
+});
+this.Input.Keyboard.OnCommandUp("Left", () => {
+    this._movingLeft = false;
+});</textarea>
+    <p>Lets look at what we just added.  For each movement we have code that essentially does:
+        <textarea class="endgate-code">
+// Whenever the command gets pressed down we want to start moving in that given direction.
+this.Input.Keyboard.OnCommandDown("Direction", () => {
+    this._movingDirection = true;
+});
+// Once the command is released (comes up) then we no longer want to move in that direction
+this.Input.Keyboard.OnCommandUp("Left", () => {
+    this._movingDirection = false;
+});</textarea> All game input handlers can be accessed via the games <a href="../API/Module/EndGate/Class/Game/Field/Input/index.html">Input field</a>.
+    </p>
+    <p>Next lets make our circle move based on our movement flags!  We currently have
+    <textarea class="endgate-code">
+public Update(gameTime: eg.GameTime): void {
+    // Move the circle to the right at 200 pixels per second
+    this._circle.Position.X += gameTime.Elapsed.Seconds * 200;
+}</textarea> which we can modify to move our circle in right direction when the specified movement flag is true.  Lets first make a class level field that will represent the circles move speed; add the following to the end of the other field declarations at the top of the MyGame class: 
+        <textarea class="endgate-code">
+private _circleSpeed: number = 200;</textarea> now modify the Update function to look like:
+        <textarea class="endgate-code">
+public Update(gameTime: eg.GameTime): void {
+    // How far we should move
+    var moveIncrementor = gameTime.Elapsed.Seconds * this._circleSpeed;
+
+    if (this._movingUp) {
+        this._circle.Position.Y -= moveIncrementor;
+    }
+
+    if (this._movingRight) {
+        this._circle.Position.X += moveIncrementor;
+    }
+
+    if (this._movingDown) {
+        this._circle.Position.Y += moveIncrementor;
+    }
+
+    if (this._movingLeft) {
+        this._circle.Position.X -= moveIncrementor;
+    }
+}</textarea><br />We're essentially checking each of our flags and then moving the circle in the corresponding direction as long as the flag is true.
+    </p>
+    <p>If we now run the game (ctrl+f5) you should be able to move the circle around the screen by pressing the arrow keys.</p>
+</div>
+
+<div class="section_header anchorAccessible">
+    <span class="anchorLink" id="usingInputControllers"></span>
+    <h3>Using input controllers</h3>
+
+    <p>We just got our circle to move around the screen but I'm sure as you were writing the code for the movements you noticed that adding helper functions could drastically reduce the code length.  So lets go back through our code and re-write it to use EndGate <a href="../API/Module/EndGate.InputControllers/index.html">InputControllers</a>.</p>
+    <p>Lets start by using the <a href="../API/Module/EndGate.InputControllers/Class/DirectionalInputController/index.html">DirectionalInputController</a>; lets add an input controller to the list of private variables in our MyGame class:
+        <textarea class="endgate-code">
+private _inputController: eg.InputControllers.DirectionalInputController;</textarea>
+        <br />Now here comes the magic! Remove all of the Keyboard binding lines of codes in the MyGame constructor and replace them with:
+        <textarea class="endgate-code">
+this._inputController = new eg.InputControllers.DirectionalInputController(this.Input.Keyboard, (direction: string, startMoving: boolean) => {
+    this["_moving" + direction] = startMoving;
+});</textarea> The constructor should now look like:
+        <textarea class="endgate-code">
+constructor() {
+    super();
+
+    this._circle = new eg.Graphics.Circle(100, 150, 40, "red");
+
+    this._inputController = new eg.InputControllers.DirectionalInputController(this.Input.Keyboard, (direction: string, startMoving: boolean) => {
+        this["_moving" + direction] = startMoving;
+    });
+        
+    this.Scene.Add(this._circle);
+}</textarea>  The function that we pass into the DirectionalInputController constructor is triggered whenever a move command is attempted via the keys "w, a, s, d, Up, Left, Down, Right" (by default).  You can always override these key combinations through the expanded constructor.  Therefore we can update our movement flags entirely based off of the output from the passed in callback function.</p>
+    <p>If you were to run the application you'd see that the application behaves the same but you can now ALSO move your circle with "w, a, s, d".  Not to mention we've reduced the code count significantly.</p>
+</div>
+
+<div class="section_header anchorAccessible">
+    <span class="anchorLink" id="usingMovementControllers"></span>
+    <h3>Using movement controllers</h3>
+
+    <p>As a next step in refactoring our code lets go back through and re-write it to use EndGate <a href="../API/Module/EndGate.MovementControllers/index.html">MovementControllers</a>.</p>
+    <p>Lets start by using the <a href="../API/Module/EndGate.MovementControllers/Class/LinearMovementController/index.html">LinearMovementController</a>; lets add a movement controller to the list of private variables in our MyGame class:
+        <textarea class="endgate-code">
+private _movementController: eg.MovementControllers.LinearMovementController;</textarea>
+        <br />Next, remove all the movement flags from the field declaration list.  The top of the MyGame class should look like this:
+        <textarea class="endgate-code">
+class MyGame extends eg.Game {
+    private _circle: eg.Graphics.Circle;
+    private _circleSpeed: number = 200;
+    private _inputController: eg.InputControllers.DirectionalInputController;
+    private _movementController: eg.MovementControllers.LinearMovementController;
+
+    constructor() {</textarea>Next remove EVERYTHING from the body of the Update function, yes I said everything; and then add 1 line of code to the update function, it should look like:
+        <textarea class="endgate-code">
+public Update(gameTime: eg.GameTime): void {
+    this._movementController.Update(gameTime);
+}</textarea> Now for the final two pieces to tie everything together.  Lets instantiate our movement controller, add the following to the constructor:
+        <textarea class="endgate-code">
+this._movementController = new eg.MovementControllers.LinearMovementController([this._circle], this._circleSpeed);</textarea>  We initialize a linear movement controller and pass in an array of moveable objects that will be moved by the movement controller, in this case we just need to pass in our circle, and then we pass in the rate at which they should move.  <br /><em>Note:</em> There are more overrides to the <a href="../API/Module/EndGate.MovementControllers/Class/LinearMovementController/index.html">LinearMovementController</a> object to allow more flexible ways to control how it moves.</p>
+    <p>Lets replace the body of the input controller's callback function to utilize the movement controller.  The three lines that involve declaring the input controller should look like:
+        <textarea class="endgate-code">
+this._inputController = new eg.InputControllers.DirectionalInputController(this.Input.Keyboard, (direction: string, startMoving: boolean) => {
+    this._movementController.Move(direction, startMoving);
+});</textarea></p>
+
+    <p>You can now run the project (ctrl + f5) and it will behave as it did but with far fewer lines!  The <b>MyGame.ts</b> should look something like this: </p>
+    <textarea class="endgate-code">
+/// <reference path="Scripts/endgate-0.1.0.d.ts" />
+
+class MyGame extends eg.Game {
+    private _circle: eg.Graphics.Circle;
+    private _circleSpeed: number = 200;
+    private _inputController: eg.InputControllers.DirectionalInputController;
+    private _movementController: eg.MovementControllers.LinearMovementController;
+
+    constructor() {
+        super();
+
+        this._circle = new eg.Graphics.Circle(100, 150, 40, "red");
+
+        this._movementController = new eg.MovementControllers.LinearMovementController([this._circle], this._circleSpeed);
+        this._inputController = new eg.InputControllers.DirectionalInputController(this.Input.Keyboard, (direction: string, startMoving: boolean) => {
+            this._movementController.Move(direction, startMoving);
+        });
+        
+        this.Scene.Add(this._circle);
+    }
+
+    public Update(gameTime: eg.GameTime): void {
+        this._movementController.Update(gameTime);
+    }
+}</textarea>
+</div>
+
+<div class="section_header anchorAccessible">
+    <span class="anchorLink" id="addingMouseControls"></span>
+    <h3>Adding mouse controls</h3>
+
+    <p>We've implemented the ability to move the circle via the keyboard but what about the mouse?  We can utilize the <a href="../API/Module/EndGate.Input/Class/MouseHandler/index.html">MouseHandler</a> to accomplish this.  Add the following code to the MyGame constructor
+        <textarea class="endgate-code">
+this.Input.Mouse.OnClick.Bind((event: eg.Input.IMouseClickEvent) => {
+    this._movementController.Position = event.Position;
+});</textarea> The reason why the movement controller is the object that we alter is because it is monitoring the circle object.  Whatever the movement controller's position is will directly affect the position of the circle.</p>
+    <p>If you run the application you will now be able to alter the circles position by clicking.  The next important thing to discuss is how we attach functions to our OnClick handler.  The OnClick handler is an <a href="../API/Module/EndGate.Input/Class/EventHandler1/index.html">EventHandler1</a> object which can be bound or unbound to.  When the event is triggered any bound functions are then executed.  You'll see event handlers scattered throughout the EndGate code base.</p>
+</div>
+
+<div class="section_header anchorAccessible">
+    <span class="anchorLink" id="synopsis"></span>
+    <h3>Synopsis</h3>
+    <p>Through this tutorial you've learned how to move the red circle via keyboard commands and mouse clicks.  By now you should have a brief understanding of <a href="../API/Module/EndGate.InputControllers/index.html">InputControllers</a> and <a href="../API/Module/EndGate.MovementControllers/index.html">MovementControllers</a> so if the time arises you can create your own.</p>
+    <p>Lastly here's how the <b>MyGame.ts</b> file should look after the tutorial has been completed:
+        <ol>
+            <li><b>MyGame.ts</b>: <br  />
+<textarea class="endgate-code">
+/// <reference path="Scripts/endgate-0.1.0.d.ts" />
+
+class MyGame extends eg.Game {
+    private _circle: eg.Graphics.Circle;
+    private _circleSpeed: number = 200;
+    private _inputController: eg.InputControllers.DirectionalInputController;
+    private _movementController: eg.MovementControllers.LinearMovementController;
+
+    constructor() {
+        super();
+
+        this._circle = new eg.Graphics.Circle(100, 150, 40, "red");
+
+        this._movementController = new eg.MovementControllers.LinearMovementController([this._circle], this._circleSpeed);
+        this._inputController = new eg.InputControllers.DirectionalInputController(this.Input.Keyboard, (direction: string, startMoving: boolean) => {
+            this._movementController.Move(direction, startMoving);
+        });
+
+        this.Input.Mouse.OnClick.Bind((event: eg.Input.IMouseClickEvent) => {
+            this._movementController.Position = event.Position;
+        });
+        
+        this.Scene.Add(this._circle);
+    }
+
+    public Update(gameTime: eg.GameTime): void {
+        this._movementController.Update(gameTime);
+    }
+}</textarea>
+            </li>
+        </ol>
+    </p>
+    <p>And if you'd like to get the project source in its entirety you can always download it here:
+        <br /><b><a href="../Downloads/Tutorials/GettingStarted2/GettingStarted2.zip" class="btn btn-success"><i class="icon-download-alt icon-white"></i> Download Tutorial Source</a></b>
+    </p>
+    <p>To continue onto the next tutorial click <a href="GettingStarted3/index.html">Here</a>.</p>
+</div>
+
+
+
+            </div>
+        </section>
+    </div>
+    <footer id="footer">
+        <div class="container">
+            <div class="row info">
+                <div class="pull-left residence">
+                    <ul style="margin-left: 0px;">
+                        <li><a href="https://nuget.org/packages/endgate/" target="_blank">Nuget Package</a>.</li>
+                    </ul>
+                </div>
+                <div class="touch">
+                    <ul>
+                        <li>Suggestions, contributions or concerns? <a href="mailto:contact@endgate.net">Contact me.</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="credits">
+                <div class="social">
+                    <a href="https://github.com/NTaylorMullen/EndGate" class="github" title="GitHub" target="_blank">
+                        <span class="socialicons ico8"></span>
+                        <span class="socialicons_h ico8h"></span>
+                    </a>
+                    <a href="https://twitter.com/ntaylormullen" class="twitter" title="Twitter" target="_blank">
+                        <span class="socialicons ico2"></span>
+                        <span class="socialicons_h ico2h"></span>
+                    </a>
+                </div>
+                <div class="copyright">© 2013 N. Taylor Mullen. All rights reserved.</div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../bundles/jquery@v=jNL6n45QMY2F5Zancgr7rQGd_p8stuHeVGd3yLUynn41"></script>
+
+    <script src="../Scripts/bootstrap.min.js"></script>
+
+    <script src="../Scripts/theme.js"></script>
+
+    <script src="../bundles/codemirror@v=q-ScDhiVKuU31aCkypFTphtrVD85CFTteJLekOGXye81"></script>
+
+    <script src="../Scripts/common.js"></script>
+
+    
+    
+
+
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date(); a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-42235120-1', 'endgate.net');
+        ga('send', 'pageview');
+
+</script>
+</body>
+</html>

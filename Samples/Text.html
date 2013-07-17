@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>EndGate - Samples - Text</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <meta name="description" content="View an EndGate sample that showcases how to draw text to the game screen.">
+
+    <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,900,300italic,400italic,700italic,900italic' rel='stylesheet' type='text/css'>
+    <link href="../bundles/main@v=eqLCeFX_0od7JWV8wyzsJ2JcUfvgQZy5zvBUh6GO1Fg1" rel="stylesheet"/>
+
+
+    
+    <style>
+        #samplesBody .row,
+        #codeArea .row {
+            margin-left:0px;
+        }
+    </style>
+    
+    <link href="../Content/themes/base/jquery-ui.css" rel="stylesheet"/>
+
+
+    <style>
+        .slider-horizontal {
+            float: left;
+            width: 125px;
+            height: 10px;
+            margin: 7px;
+            font-size: 12px;
+        }
+
+        #gameHolder {
+            position: relative;
+            margin-left: 0px;
+        }
+
+        .control-holder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .ui-slider-handle {
+            border-color: #317eac;
+        }
+
+        .redColorPicker .ui-slider-range {
+            background: #ef2929;
+        }
+
+        .redColorPicker .ui-slider-handle {
+            border-color: #ef2929;
+        }
+
+        .greenColorPicker .ui-slider-range {
+            background: #8ae234;
+        }
+
+        .greenColorPicker .ui-slider-handle {
+            border-color: #8ae234;
+        }
+
+        .blueColorPicker .ui-slider-range {
+            background: #729fcf;
+        }
+
+        .blueColorPicker .ui-slider-handle {
+            border-color: #729fcf;
+        }
+
+        select {
+            margin-bottom: 0px!important;
+        }
+    </style>
+
+
+
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body>
+    <header class="navbar transparent navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="brand" href="../index.html">
+                    <strong>EndGate</strong>
+                </a>
+                <div class="nav-collapse collapse">
+                    <ul class="nav pull-right">
+                        <li><a href="../Download.html">DOWNLOAD</a></li>
+                        <li><a href="../Tutorials.html">TUTORIALS</a></li>
+                        <li><a href="../Samples.html" class="active">SAMPLES</a></li>
+                        <li><a href="../API.html">API</a></li>
+                        <li><a href="../FAQ.html">FAQ</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div id="body">
+        
+        <section class="content-wrapper main-content clear-fix">
+            <div class="container">
+                
+
+
+<ul class="breadcrumb">
+    <li><a href="../Samples.html">Samples</a> <span class="divider">/</span></li>
+    <li class="active">Text</li>
+</ul>
+
+<div id="samplesBody">
+    
+
+
+<div class="page-header section_header">
+    <h3>Text</h3>
+    <p>Demonstrates how to use the Text2d object within the graphics library.</p>
+</div>
+
+<div class="row well ui-widget-content">
+    <div class="span2 well" style="margin-bottom: 0px; height: 148px;">
+        <h4 class="text-center">Color</h4>
+        <div id="redColorPicker" class="slider-horizontal redColorPicker"></div>
+        <div id="greenColorPicker" class="slider-horizontal greenColorPicker"></div>
+        <div id="blueColorPicker" class="slider-horizontal blueColorPicker"></div>
+    </div>
+    <div class="span2 well" style="margin-bottom: 0px; height: 148px;">
+        <h4 class="text-center">Rotation</h4>
+        <div id="rotationSlider" class="slider-horizontal"></div>
+        <h4 class="text-center">Position</h4>
+        <div id="positionXSlider" class="slider-horizontal"></div>
+        <div id="positionYSlider" class="slider-horizontal"></div>
+    </div>
+    <div class="span2 well" style="margin-bottom: 0px; height: 148px;">
+        <h4 class="text-center">Opacity</h4>
+        <div id="opacitySlider" class="slider-horizontal"></div>
+        <h4 class="text-center">Font Size</h4>
+        <div id="fontSizeSlider" class="slider-horizontal"></div>
+    </div>
+    <div class="span2 well text-center" style="margin-bottom: 0px; height: 148px;">
+        <h4 class="text-center">Animate</h4>
+        <p>
+            <button animation="Position" class="textAnimator btn" style="width: 100%;">Position</button>
+        </p>
+        <p>
+            <button animation="Rotation" class="textAnimator btn" style="width: 100%;">Rotation</button>
+        </p>
+        <p>
+            <button animation="Size" class="textAnimator btn" style="width: 45%;">Size</button>
+            <button animation="Opacity" class="textAnimator btn" style="width: 45%;">Opac</button>
+        </p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="span3 well ui-widget-content" style="margin-left: 0px; height: 446px; width: 180px;">
+        <div class="span2 well" style="margin-left: 0px; height: 148px;">
+            <h4 class="text-center">Border</h4>
+            <div id="borderThickness" class="slider-horizontal"></div>
+            <div id="borderRed" class="slider-horizontal redColorPicker"></div>
+            <div id="borderGreen" class="slider-horizontal greenColorPicker"></div>
+            <div id="borderBlue" class="slider-horizontal blueColorPicker"></div>
+        </div>
+
+        <div class="span2 well" style="margin-left: 0px; height: 198px;">
+            <h4 class="text-center">Shadow</h4>
+            <div id="shadowX" class="slider-horizontal"></div>
+            <div id="shadowY" class="slider-horizontal"></div>
+            <div id="shadowColorRed" class="slider-horizontal redColorPicker"></div>
+            <div id="shadowColorGreen" class="slider-horizontal greenColorPicker"></div>
+            <div id="shadowColorBlue" class="slider-horizontal blueColorPicker"></div>
+            <div id="shadowBlur" class="slider-horizontal"></div>
+        </div>
+    </div>
+    <div id="gameHolder" class="well span8" style="height: 446px; width: 678px;">
+        <div class="controls control-holder">
+            <p>
+                <select id="fontFamilySelect">
+                    <option value="">-Font Family-</option>
+                </select>
+            </p>
+            <p>
+                <select id="fontStyleSelect">
+                    <option value="">-Font Style-</option>
+                </select>
+            </p>
+            <p>
+                <select id="fontWeightSelect">
+                    <option value="">-Font Weight-</option>
+                    <option value="normal">normal</option>
+                    <option value="bold">bold</option>
+                    <option value="bolder">bolder</option>
+                    <option value="lighter">lighter</option>
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                    <option value="300">300</option>
+                    <option value="400">400</option>
+                    <option value="500">500</option>
+                    <option value="600">600</option>
+                    <option value="700">700</option>
+                    <option value="800">800</option>
+                    <option value="900">900</option>
+                </select>
+            </p>
+        </div>
+    </div>
+</div>
+
+
+</div>
+
+<div id="codeArea">
+    <h3>Code</h3>
+    <div class="row" style="position: relative;">
+        <div id="_fileContent" style="margin-left: 0px; margin-bottom: 150px;">
+        </div>
+        <div class="well" style="position: absolute; top: 0; padding: 8px;">
+            <ul class="nav nav-list" id="_fileList">
+                <li class="nav-header">File List</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+            </div>
+        </section>
+    </div>
+    <footer id="footer">
+        <div class="container">
+            <div class="row info">
+                <div class="pull-left residence">
+                    <ul style="margin-left: 0px;">
+                        <li><a href="https://nuget.org/packages/endgate/" target="_blank">Nuget Package</a>.</li>
+                    </ul>
+                </div>
+                <div class="touch">
+                    <ul>
+                        <li>Suggestions, contributions or concerns? <a href="mailto:contact@endgate.net">Contact me.</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="credits">
+                <div class="social">
+                    <a href="https://github.com/NTaylorMullen/EndGate" class="github" title="GitHub" target="_blank">
+                        <span class="socialicons ico8"></span>
+                        <span class="socialicons_h ico8h"></span>
+                    </a>
+                    <a href="https://twitter.com/ntaylormullen" class="twitter" title="Twitter" target="_blank">
+                        <span class="socialicons ico2"></span>
+                        <span class="socialicons_h ico2h"></span>
+                    </a>
+                </div>
+                <div class="copyright">© 2013 N. Taylor Mullen. All rights reserved.</div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../bundles/jquery@v=jNL6n45QMY2F5Zancgr7rQGd_p8stuHeVGd3yLUynn41"></script>
+
+    <script src="../Scripts/bootstrap.min.js"></script>
+
+    <script src="../Scripts/theme.js"></script>
+
+    <script src="../bundles/codemirror@v=q-ScDhiVKuU31aCkypFTphtrVD85CFTteJLekOGXye81"></script>
+
+    <script src="../Scripts/common.js"></script>
+
+        
+    <script src="../Scripts/endgate.js"></script>
+
+    
+    <script src="../Scripts/jquery-ui-1.10.2.js"></script>
+
+    <script data-typescript="true" src="../Content/Samples/Text/CustomSlider.js"></script>
+    <script data-typescript="true" src="../Content/Samples/Text/ColorPicker.js"></script>
+    <script data-typescript="true" src="../Content/Samples/Text/TextAnimator.js"></script>
+    <script data-typescript="true" src="../Content/Samples/Text/Game.js"></script>
+    <script data-typescript="true" src="../Content/Samples/Text/Main.js"></script>
+
+    <script src="../CodeMirror/codeloader.js"></script>
+
+
+
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date(); a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-42235120-1', 'endgate.net');
+        ga('send', 'pageview');
+
+</script>
+</body>
+</html>

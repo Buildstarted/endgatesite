@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>EndGate - Samples - Map Creator</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <meta name="description" content="View an EndGate sample that showcases a variety of API&#39;s.  Ultimately this sample helps create square tile maps to use in games.">
+
+    <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,900,300italic,400italic,700italic,900italic' rel='stylesheet' type='text/css'>
+    <link href="../bundles/main@v=eqLCeFX_0od7JWV8wyzsJ2JcUfvgQZy5zvBUh6GO1Fg1" rel="stylesheet"/>
+
+
+    
+    <style>
+        #samplesBody .row,
+        #codeArea .row {
+            margin-left:0px;
+        }
+    </style>
+    
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+
+        #builderPane {
+            position: absolute;
+            width: 100%;
+            left: 0;
+        }
+    </style>
+
+
+
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body>
+    <header class="navbar transparent navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="brand" href="../index.html">
+                    <strong>EndGate</strong>
+                </a>
+                <div class="nav-collapse collapse">
+                    <ul class="nav pull-right">
+                        <li><a href="../Download.html">DOWNLOAD</a></li>
+                        <li><a href="../Tutorials.html">TUTORIALS</a></li>
+                        <li><a href="../Samples.html" class="active">SAMPLES</a></li>
+                        <li><a href="../API.html">API</a></li>
+                        <li><a href="../FAQ.html">FAQ</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div id="body">
+        
+        <section class="content-wrapper main-content clear-fix">
+            <div class="container">
+                
+
+
+<ul class="breadcrumb">
+    <li><a href="../Samples.html">Samples</a> <span class="divider">/</span></li>
+    <li class="active">Map Creator</li>
+</ul>
+
+<div id="samplesBody">
+    
+
+
+<div class="page-header section_header">
+    <h3>Map Creator</h3>
+    <p>Demonstrates a accumulation of EndGate assets to help create SquareTileMaps visually.</p>
+</div>
+
+<div id="setupPane" class="form-horizontal well">
+    <h3>Setup</h3>
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="MapCreator.html#createNew" data-toggle="tab">Create New</a>
+        </li>
+        <li class="">
+            <a href="MapCreator.html#loadSaved" data-toggle="tab">Load Saved</a>
+        </li>
+    </ul>
+    <div class="tabbable">
+        <div class="tab-content">
+            <div class="tab-pane active" id="createNew">
+                <div class="control-group">
+                    <label class="control-label" for="dimensionRows">Map Dimensions: </label>
+                    <div class="controls">
+                        <input id="dimensionRows" class="input-small" type="text" value="15" placeholder="Rows..." />
+                        X
+                <input id="dimensionColumns" class="input-small" type="text" value="15" placeholder="Columns..." />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="tileSizeWidth">Tile Size (Pixels): </label>
+                    <div class="controls">
+                        <input id="tileSizeWidth" class="input-small" type="text" value="32" placeholder="Width..." />
+                        X
+                <input id="tileSizeHeight" class="input-small" type="text" value="32" placeholder="Height..." />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="spriteSheetUrl">Sprite Sheet Url: </label>
+                    <div class="controls">
+                        <input id="spriteSheetUrl" type="text" class="input-xxlarge" value="http://endgate.net/Content/Samples/RawRPG/images/wood_tileset_3.png" placeholder="Spritesheet URL..." />
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button id="createMap" class="btn btn-primary">Create</button>
+                    <button id="resetSetup" class="btn">Reset</button>
+                </div>
+            </div>
+            <div class="tab-pane" id="loadSaved">
+                <div class="control-group">
+                    <label class="control-label" for="savedMaps">Saved Maps: </label>
+                    <div class="controls">
+                        <select id="savedMaps"></select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="savedMaps">Load From Text: </label>
+                    <div class="controls">
+                        <textarea class="input-xlarge" id="loadText" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button id="loadMap" class="btn btn-primary disabled">Load Saved</button>
+                    <button id="loadFromText" class="btn btn-primary">Load Output Text</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="blockWrapper">
+    <div id="builderPane" class="hide" style="padding-left: 25px;">
+        <p class="row">Press space to click and drag around the map.  Select tiles from the Sprite Sheet viewer on the right (left click) and then fill the map on the left (left click).  Clear selections or tiles with a right click.</p>
+
+        <div class="row">
+            <div class="form-vertical well pull-left" id="mapBuilderUtilities">
+                <div class="pull-left">
+                    <select id="layers" style="margin-bottom: 0px;">
+                        <option value="0">Background</option>
+                    </select>
+
+                    <input id="layerName" type="text" class="input-medium" value="" style="margin-left: 30px; margin-bottom: 0px;" placeholder="Layer Name..." />
+                    <button id="addLayer" class="btn">Add Layer</button>
+                </div>
+
+                <div class="pull-left" style="margin-left: 50px;">
+                    <select id="outputOptions" style="margin-bottom: 0px">
+                        <option value="0">Save Text (Can be loaded by anyone using Map Builder)</option>
+                        <option value="1">Code (Creates Square Tile Map, much like Raw RPG)</option>
+                        <option value="2">Image (Must be on the same domain)</option>
+                    </select>
+                    <button id="output" class="btn">Output</button>
+                </div>
+
+                <div class="pull-right">
+                    <span id="saveDialog"></span>
+                    <input id="saveName" type="text" class="input-medium" value="" style="margin-bottom: 0px;" placeholder="Save Name..." />
+                    <button id="save" class="btn">Save</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div id="mapBuilder" class="form-vertical well pull-left" style="height: 600px;">
+            </div>
+            <div id="spriteSheetViewer" class="form-vertical well pull-left" style="height: 600px;">
+            </div>
+        </div>
+
+        <div class="row form-vertical well">
+            <fieldset>
+                <legend>Output</legend>
+                <div id="outputPanel"></div>
+            </fieldset>
+        </div>
+    </div>
+</div>
+
+
+</div>
+
+<div id="codeArea">
+    <h3>Code</h3>
+    <div class="row" style="position: relative;">
+        <div id="_fileContent" style="margin-left: 0px; margin-bottom: 150px;">
+        </div>
+        <div class="well" style="position: absolute; top: 0; padding: 8px;">
+            <ul class="nav nav-list" id="_fileList">
+                <li class="nav-header">File List</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+            </div>
+        </section>
+    </div>
+    <footer id="footer">
+        <div class="container">
+            <div class="row info">
+                <div class="pull-left residence">
+                    <ul style="margin-left: 0px;">
+                        <li><a href="https://nuget.org/packages/endgate/" target="_blank">Nuget Package</a>.</li>
+                    </ul>
+                </div>
+                <div class="touch">
+                    <ul>
+                        <li>Suggestions, contributions or concerns? <a href="mailto:contact@endgate.net">Contact me.</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="credits">
+                <div class="social">
+                    <a href="https://github.com/NTaylorMullen/EndGate" class="github" title="GitHub" target="_blank">
+                        <span class="socialicons ico8"></span>
+                        <span class="socialicons_h ico8h"></span>
+                    </a>
+                    <a href="https://twitter.com/ntaylormullen" class="twitter" title="Twitter" target="_blank">
+                        <span class="socialicons ico2"></span>
+                        <span class="socialicons_h ico2h"></span>
+                    </a>
+                </div>
+                <div class="copyright">© 2013 N. Taylor Mullen. All rights reserved.</div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../bundles/jquery@v=jNL6n45QMY2F5Zancgr7rQGd_p8stuHeVGd3yLUynn41"></script>
+
+    <script src="../Scripts/bootstrap.min.js"></script>
+
+    <script src="../Scripts/theme.js"></script>
+
+    <script src="../bundles/codemirror@v=q-ScDhiVKuU31aCkypFTphtrVD85CFTteJLekOGXye81"></script>
+
+    <script src="../Scripts/common.js"></script>
+
+        
+    <script src="../Scripts/endgate.js"></script>
+
+    
+    <script data-typescript="true" src="../Content/Samples/MapCreator/GridEntry.js"></script>
+    <script data-typescript="true" src="../Content/Samples/MapCreator/LayerManager.js"></script>
+    <script data-typescript="true" src="../Content/Samples/MapCreator/MapBuilder.js"></script>
+    <script data-typescript="true" src="../Content/Samples/MapCreator/SpriteSheetViewer.js"></script>
+    <script data-typescript="true" src="../Content/Samples/MapCreator/TileHighlighter.js"></script>
+    <script data-typescript="true" src="../Content/Samples/MapCreator/TileFiller.js"></script>
+    <script data-typescript="true" src="../Content/Samples/MapCreator/TileSelector.js"></script>
+    <script data-typescript="true" src="../Content/Samples/MapCreator/CameraDragController.js"></script>
+    <script data-typescript="true" src="../Content/Samples/MapCreator/CameraZoomController.js"></script>
+    <script data-typescript="true" src="../Content/Samples/MapCreator/SetupManager.js"></script>
+    <script data-typescript="true" src="../Content/Samples/MapCreator/PersistenceManager.js"></script>
+    <script data-typescript="true" src="../Content/Samples/MapCreator/OutputHandler.js"></script>
+    <script data-typescript="true" src="../Content/Samples/MapCreator/Main.js"></script>
+
+    <script src="../CodeMirror/codeloader.js"></script>
+
+
+
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date(); a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-42235120-1', 'endgate.net');
+        ga('send', 'pageview');
+
+</script>
+</body>
+</html>

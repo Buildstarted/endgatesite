@@ -1,0 +1,3 @@
+﻿Attribution: http://opengameart.org/content/platformer-sprites (owner did not require attribution but thought I'd give it anyways :) )
+
+This image was built using the EndGate MapCreator: http://endgate.net/Samples/MapCreator
